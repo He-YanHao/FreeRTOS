@@ -1,47 +1,41 @@
-# Compiled binaries
+# Keil MDK 生成文件
+*.uvgui.*
+*.uvopt
+*.uvproj.user
+*.uvprojx.local
+*.uvmpw
+*.dep
+*.lnp
+*.lst
+*.map
+*.crf
 *.o
-*.bin
+*.d
+*.axf
 *.elf
 *.hex
-*.map
-*.out
-*.obj
+*.bin
+*.sct
+*.build_log.htm
 
-# Trash
-*.bak
-thumbs.db
-*.~*
+# 编译输出目录
+/Output/
+/Listings/
+/Objects/
 
-# IAR Settings  
-**/settings/*.crun  
-**/settings/*.dbgdt  
-**/settings/*.cspy  
-**/settings/*.cspy.*  
-**/settings/*.xcl  
-**/settings/*.dni  
-**/settings/*.wsdt  
-**/settings/*.wspos  
+# 调试文件
+*.ini
+*.dbg
+*.cdb
 
-# IAR Debug Exe  
-**/Exe/*.sim  
+# 本地用户设置（不同开发者可能不同）
+*.workspace
+*.local
 
-# IAR Debug Obj  
-**/Obj/*.pbd  
-**/Obj/*.pbd.*  
-**/Obj/*.pbi  
-**/Obj/*.pbi.*  
+# 版本控制工具文件
+/.vs/
+/.vscode/
 
-# IAR project "Debug" directory
-Debug/
-
-# IAR project "Release" directory
-Release/
-
-# IAR project settings directory
-settings/
-
-# IAR backup files
-Backup*
-
-# IAR .dep files
-*.dep
+# 系统文件
+.DS_Store
+Thumbs.db
