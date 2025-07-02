@@ -1,9 +1,0 @@
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_timebase_rtc_alarm_template.c
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\Core\Inc\stm32f1xx_hal_conf.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_def.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\Core\Inc\stm32f1xx.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\Core\Inc\stm32f103xe.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: ..\Core\core_cm3.h
-..\output\stm32f1xx_hal_timebase_rtc_alarm_template.o: D:\Program\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdint.h
