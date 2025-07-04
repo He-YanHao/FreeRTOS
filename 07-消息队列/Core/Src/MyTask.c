@@ -21,6 +21,10 @@ StaticTask_t Task2_tcb;                    // 静态任务的TCB结构体类型
 /* 队列句柄 */
 QueueHandle_t queue1 = NULL;
 
+//大数据
+char name[] = "123456789";
+//char *name = "123456789";
+
 void freertos_start(void)
 {
     //创建任务
@@ -54,7 +58,7 @@ void freertos_start(void)
 //task0自动创建队列
 void Task0(void *pvParameters)
 {
-    queue1 = xQueueCreate(16,4);
+    queue1 = xQueueCreate(4,16);
     if (queue1 != NULL)
     {
         printf("queue1创建成功\r\n");
@@ -69,40 +73,36 @@ void Task0(void *pvParameters)
 //按下key0后给task1将数据入队
 void Task1(void *pvParameters)
 {
-    char name[] = "zhen shi you yi si";
-    uint8_t key = Key_return();
+    uint8_t key = 0;
+    BaseType_t res = 0;
     while(1)
     {
+        key = Key_return();
         printf("task1开始运行...\r\n");
         if(key == KEY0)
         {
-            if(xQueueSend(queue1, &name, 100) == pdPASS)
+            res = xQueueSend(queue1, &name, portMAX_DELAY);
+            if(res == pdPASS)
             {
-                printf("队列1创建成功...\r\n");
+                printf("队列1写入成功...\r\n");
             }
             else
             {
-                printf("队列1创建失败...\r\n");
+                printf("队列1写入失败...\r\n");
             }
         }
         vTaskDelay(1000);
-        printf("task1结束运行...\r\n");
     }
-    
 }
 
 //按下key1后给task2读取队列数据
 void Task2(void *pvParameters)
 {
     uint8_t shou[128] = {0};
-    uint8_t key2 = 0;
     while(1)
     {
-        if(key2 == KEY0)
-        {
-        xQueueReceive(queue1, &shou, 100);
-        printf("%s/n",shou);
-        }
+        xQueueReceive(queue1, &shou, 100);//读取队列数据到shuo
+        printf("%s\n",shou);//发送队列数据shuo
         vTaskDelay(1000);
     }
 }
