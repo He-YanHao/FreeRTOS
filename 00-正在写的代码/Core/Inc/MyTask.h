@@ -3,9 +3,10 @@
 
 /* freertos必须的的头文件 */
 #include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h" //队列相关的头文件
-#include "semphr.h" //信号量相关的头文件
+#include "task.h"   //任务操作
+#include "timers.h" //软件定时器
+#include "list.h"   //实现内核链表
+#include "queue.h"  //队列、信号量、互斥锁
 
 /* 硬件 */
 #include "OLED.h"
@@ -16,18 +17,23 @@
 
 /* 启动任务的配置 */
 #define Task0_STACK    256      //配置堆栈
-#define Task0_PRIORITY 1        //配置优先级
+#define Task0_PRIORITY 3        //配置优先级
 
 #define Task1_STACK    256      //配置堆栈
-#define Task1_PRIORITY 1        //配置优先级
+#define Task1_PRIORITY 2        //配置优先级
 
 #define Task2_STACK    256      //配置堆栈
-#define Task2_PRIORITY 1        //配置优先级
+#define Task2_PRIORITY 2        //配置优先级
+
+#define Debugging_STACK    256      //配置堆栈
+#define Debugging_PRIORITY 1        //配置优先级
+
 
 void freertos_start(void);
 void Task0(void *pvParameters); //声明任务函数
 void Task1(void *pvParameters); //声明任务函数
 void Task2(void *pvParameters); //声明任务函数
+void Debugging(void *pvParameters);//调试函数
 
 void ConfigureTimerForRuntimeStats(void);
 uint32_t GetRuntimeCounterValue(void);

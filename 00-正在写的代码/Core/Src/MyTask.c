@@ -1,6 +1,7 @@
 #include "MyTask.h"
 
 char pcWriteBuffer[512]; // 足够大的缓冲区
+UBaseType_t Debugging_Num = 0;
 
 /* 启动任务的配置 */
 TaskHandle_t Task0_handle;      //声明句柄
@@ -18,11 +19,14 @@ StackType_t Task2_stack[Task2_STACK]; // 静态任务的任务栈，以数组形式存储
 StaticTask_t Task2_tcb;                    // 静态任务的TCB结构体类型
 //无需关心具体结果 储存任务细节
 
-/* 信号量句柄 */
-SemaphoreHandle_t SemHandle = NULL;
+TaskHandle_t Debugging_handle;      //声明句柄
+StackType_t Debugging_stack[Debugging_STACK]; // 静态任务的任务栈，以数组形式存储
+StaticTask_t Debugging_tcb;                    // 静态任务的TCB结构体类型
+//无需关心具体结果 储存任务细节
 
 void freertos_start(void)
 {
+    printf("任务开始\r\n");
     //创建任务
       Task0_handle    =    xTaskCreateStatic(
                            Task0,// 任务函数地址
@@ -48,78 +52,68 @@ void freertos_start(void)
                            Task2_PRIORITY,  // 优先级
                            Task2_stack,     // 任务栈数组
                            &Task2_tcb );    // 任务控制块
-    vTaskStartScheduler();
+      Debugging_handle  =  xTaskCreateStatic(
+                           Debugging,       // 任务函数地址
+                           "Debugging",         // 任务名称
+                           Debugging_STACK,     // 栈大小
+                           NULL,            // 参数
+                           Debugging_PRIORITY,  // 优先级
+                           Debugging_stack,     // 任务栈数组
+                           &Debugging_tcb );    // 任务控制块
+    vTaskDelete(NULL);//自删 未启用调度器暂时不会自删
+    vTaskStartScheduler();//启用任务调度器
 }
 
-//task0自动创建二值信号量
+//task0自动创建队列集
 void Task0(void *pvParameters)
 {
-    SemHandle = xSemaphoreCreateBinary();
-    if (SemHandle != NULL)
-    {
-        printf("SemHandle创建成功\r\n");
-    }
-    else
-    {
-        printf("SemHandle创建失败\r\n");
-    }
+    Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
+    printf("Task0堆栈高水位标记为：%lu\r\n",Debugging_Num);
     vTaskDelete(NULL);
 }
 
-//按下key0后给task1将获取
+//
 void Task1(void *pvParameters)
-{
-    uint8_t key1 = 0;
-    uint8_t pd1 = 0;    
+{   
     while(1)
     {
-        key1 = Key_return();
-        printf("task1开始运行...\r\n");
-        if(key1 == KEY0)
+        for(uint8_t i = 0; i < 20; i++)
         {
-            pd1 = xSemaphoreTake(SemHandle,0);
-            //获取信号量
-            if(pd1 == pdTRUE)
-            {
-                printf("信号量1获取成功...\r\n");
-            }
-            else
-            {
-                printf("信号量1获取失败...\r\n");
-            }
+            
+            vTaskDelay(50);
         }
-        vTaskDelay(500);
-        printf("task1结束运行...\r\n");
+        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
+        printf("Task1堆栈高水位标记为：%lu\r\n",Debugging_Num);
     }
 }
 
-//按下key1后给task2将获取
+//
 void Task2(void *pvParameters)
 {
-    uint8_t key2 = 0;
-    uint8_t pd2 = 0;    
     while(1)
     {
-        key2 = Key_return();
-        printf("task2开始运行...\r\n");
-        if(key2 == KEY1)
+        for(uint8_t i = 0; i < 20; i++)
         {
-            pd2 = xSemaphoreGive(SemHandle);
-            //获取信号量
-            if(pd2 == pdTRUE)
-            {
-                printf("信号量1释放成功...\r\n");
-            }
-            else
-            {
-                printf("信号量1释放失败...\r\n");
-            }
+            
+            vTaskDelay(50);
         }
-        vTaskDelay(500);
-        printf("task2结束运行...\r\n");
+        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
+        printf("Task2堆栈高水位标记为：%lu\r\n",Debugging_Num);
     }
 }
 
+void Debugging(void *pvParameters)
+{
+    while(1)
+    {
+
+        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
+        printf("Debugging堆栈高水位标记为：%lu\r\n",Debugging_Num);
+        vTaskGetRunTimeStats(pcWriteBuffer);
+        printf("%s\r\n",pcWriteBuffer);
+        vTaskDelay(1000);
+    }
+}
 
 // 使用 DWT 周期计数器 (Cortex-M3/M4)
 void ConfigureTimerForRuntimeStats(void) {
