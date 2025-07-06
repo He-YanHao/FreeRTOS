@@ -7,6 +7,7 @@
 #include "timers.h" //软件定时器
 #include "list.h"   //实现内核链表
 #include "queue.h"  //队列、信号量、互斥锁
+#include "event_groups.h" //事件标志组的头文件
 
 /* 硬件 */
 #include "OLED.h"
@@ -16,8 +17,8 @@
 #include "usart.h"
 
 /* 启动任务的配置 */
-#define Task0_STACK    256      //配置堆栈
-#define Task0_PRIORITY 3        //配置优先级
+#define Task0_STACK    512      //配置堆栈
+#define Task0_PRIORITY 4        //配置优先级
 
 #define Task1_STACK    256      //配置堆栈
 #define Task1_PRIORITY 2        //配置优先级
@@ -25,7 +26,7 @@
 #define Task2_STACK    256      //配置堆栈
 #define Task2_PRIORITY 2        //配置优先级
 
-#define Debugging_STACK    256      //配置堆栈
+#define Debugging_STACK    512      //配置堆栈
 #define Debugging_PRIORITY 1        //配置优先级
 
 

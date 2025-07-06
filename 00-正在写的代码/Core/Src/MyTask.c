@@ -24,6 +24,9 @@ StackType_t Debugging_stack[Debugging_STACK]; // ¾²Ì¬ÈÎÎñµÄÈÎÎñÕ»£¬ÒÔÊı×éĞÎÊ½´æ´
 StaticTask_t Debugging_tcb;                    // ¾²Ì¬ÈÎÎñµÄTCB½á¹¹ÌåÀàĞÍ
 //ÎŞĞè¹ØĞÄ¾ßÌå½á¹û ´¢´æÈÎÎñÏ¸½Ú
 
+//ÊÂ¼ş×é¾ä±ú
+EventGroupHandle_t EvGrHandle = NULL;
+
 void freertos_start(void)
 {
     printf("ÈÎÎñ¿ªÊ¼\r\n");
@@ -60,45 +63,45 @@ void freertos_start(void)
                            Debugging_PRIORITY,  // ÓÅÏÈ¼¶
                            Debugging_stack,     // ÈÎÎñÕ»Êı×é
                            &Debugging_tcb );    // ÈÎÎñ¿ØÖÆ¿é
-    vTaskDelete(NULL);//×ÔÉ¾ Î´ÆôÓÃµ÷¶ÈÆ÷ÔİÊ±²»»á×ÔÉ¾
+    //vTaskDelete(NULL);//×ÔÉ¾ Î´ÆôÓÃµ÷¶ÈÆ÷ÔİÊ±²»»á×ÔÉ¾
     vTaskStartScheduler();//ÆôÓÃÈÎÎñµ÷¶ÈÆ÷
+    //vTaskDelete(NULL);//×ÔÉ¾ Î´ÆôÓÃµ÷¶ÈÆ÷ÔİÊ±²»»á×ÔÉ¾
 }
 
-//task0×Ô¶¯´´½¨¶ÓÁĞ¼¯
+//task0
 void Task0(void *pvParameters)
 {
-    Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
-    printf("Task0¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
+
     vTaskDelete(NULL);
 }
 
 //
 void Task1(void *pvParameters)
-{   
+{
+    uint8_t key = 0;
     while(1)
     {
-        for(uint8_t i = 0; i < 20; i++)
+        key = Key_return();
+        if(key == KEY0)
         {
-            
-            vTaskDelay(50);
+            printf("\r\n");
         }
-        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
-        printf("Task1¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
+        else if(key == KEY1)
+        {
+            printf("\r\n");
+        }
+        vTaskDelay(50);
     }
 }
 
 //
 void Task2(void *pvParameters)
 {
+    uint32_t num = 0;
     while(1)
     {
-        for(uint8_t i = 0; i < 20; i++)
-        {
-            
-            vTaskDelay(50);
-        }
-        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
-        printf("Task2¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
+        printf("%u\r\n",num);
+        vTaskDelay(50);
     }
 }
 
@@ -106,12 +109,15 @@ void Debugging(void *pvParameters)
 {
     while(1)
     {
-
-        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
-        printf("Debugging¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
-        vTaskGetRunTimeStats(pcWriteBuffer);
-        printf("%s\r\n",pcWriteBuffer);
-        vTaskDelay(1000);
+//        Debugging_Num = uxTaskGetStackHighWaterMark(Task1_handle);
+//        printf("Task1¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
+//        Debugging_Num = uxTaskGetStackHighWaterMark(Task2_handle);
+//        printf("Task2¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
+//        Debugging_Num = uxTaskGetStackHighWaterMark(NULL);
+//        printf("Debugging¶ÑÕ»¸ßË®Î»±ê¼ÇÎª£º%lu\r\n",Debugging_Num);
+//        vTaskGetRunTimeStats(pcWriteBuffer);
+//        printf("%s\r\n",pcWriteBuffer);
+        vTaskDelay(3000);
     }
 }
 
