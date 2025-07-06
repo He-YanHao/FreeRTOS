@@ -46,10 +46,15 @@ void LED0_Toggle_Task(void *pvParameters)
 
 void LED1_Toggle_Task(void *pvParameters)
 {
+    uint8_t key = 0;
     while (1)
     {
-        LED1_Toggle();
-        vTaskDelay(50);
+        key = Key_return();
+        if(key == KEY0)
+        {
+            LED1_Toggle();
+        }
+        vTaskDelay(500);
     }
 }
 

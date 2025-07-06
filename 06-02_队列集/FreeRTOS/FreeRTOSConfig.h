@@ -89,6 +89,24 @@
 #define INCLUDE_vTaskDelay				1
 //启用基本的相对时间延时功能
 
+/* 队列与信号量配置 */
+#define configUSE_QUEUE_SETS                  1    
+//启用队列
+#define configUSE_TASK_NOTIFICATIONS          1   
+//开启任务通知功能，包括信号量、事件标志组和消息邮箱，默认开启。
+#define configTASK_NOTIFICATION_ARRAY_ENTRIES 1
+//定义任务通知数组的大小
+#define configUSE_MUTEXES                     0    
+//为1时使用互斥信号量
+#define configUSE_RECURSIVE_MUTEXES           0   
+//为1时使用递归互斥信号量                                            
+#define configUSE_COUNTING_SEMAPHORES         0
+//为1时使用计数信号量
+#define configUSE_ALTERNATIVE_API             0
+//已弃用!!!   为1时使用替代 API，可能更高效，但依赖硬件支持，需测试稳定性。
+#define configQUEUE_REGISTRY_SIZE             10                                 
+//设置可以注册的信号量和消息队列个数
+
 /* 与运行时间和任务状态收集有关的配置选项，多用于调试。 */
 #define configGENERATE_RUN_TIME_STATS         1
 //启用运行时间统计功能
@@ -105,13 +123,13 @@
 //vTaskGetRunTimeStats()
 //将任务信息格式化为人类可读的字符串形式
 extern void ConfigureTimerForRuntimeStats(void);
-//DWT计时器
+//DWT计时器 初始化用于运行时统计的定时器
 extern uint32_t GetRuntimeCounterValue(void);
-//DWT计时器
+//DWT计时器 获取当前定时器的计数值
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() ConfigureTimerForRuntimeStats()
-//
+//初始化用于运行时统计的定时器
 #define portGET_RUN_TIME_COUNTER_VALUE() GetRuntimeCounterValue()
-//
+//获取当前定时器的计数值
 #endif
 
 /* 中断配置 */

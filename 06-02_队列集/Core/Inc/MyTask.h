@@ -14,13 +14,13 @@
 #include "usart.h"
 
 /* ∆Ù∂Ø»ŒŒÒµƒ≈‰÷√ */
-#define Task0_STACK    256      //≈‰÷√∂—’ª
-#define Task0_PRIORITY 1        //≈‰÷√”≈œ»º∂
+#define Task0_STACK    512      //≈‰÷√∂—’ª
+#define Task0_PRIORITY 2        //≈‰÷√”≈œ»º∂
 
-#define Task1_STACK    256      //≈‰÷√∂—’ª
+#define Task1_STACK    512      //≈‰÷√∂—’ª
 #define Task1_PRIORITY 1        //≈‰÷√”≈œ»º∂
 
-#define Task2_STACK    256      //≈‰÷√∂—’ª
+#define Task2_STACK    512      //≈‰÷√∂—’ª
 #define Task2_PRIORITY 1        //≈‰÷√”≈œ»º∂
 
 void freertos_start(void);
