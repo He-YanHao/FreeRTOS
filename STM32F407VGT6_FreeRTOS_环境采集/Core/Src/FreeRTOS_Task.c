@@ -16,7 +16,7 @@ void FreeRTOS_Start(void)
 }
 
 TaskHandle_t FreeRTOS_LED_Toggle_TaskHandle;
-TaskHandle_t FreeRTOS_USART_TaskHandle;
+TimerHandle_t FreeRTOS_OUT_TaskHandle;
 void Task_Start(void)
 {
     printf("Task_Start...\r\n");
@@ -26,13 +26,24 @@ void Task_Start(void)
                 (configSTACK_DEPTH_TYPE)LED_Toggle_STACK, // 任务栈大小，默认最小128，单位4字节
                 (void *)NULL,                             // 传递给任务的参数
                 (UBaseType_t)LED_Toggle_PRIORITY,         // 任务的优先级
-                (TaskHandle_t *)&FreeRTOS_LED_Toggle_TaskHandle);      // 任务句柄的地址
-    xTaskCreate((TaskFunction_t)FreeRTOS_USART,      // 任务函数的地址
-                (char *)"FreeRTOS_USART",            // 任务名字符串
-                (configSTACK_DEPTH_TYPE)FreeRTOS_USART_STACK, // 任务栈大小，默认最小128，单位4字节
-                (void *)NULL,                             // 传递给任务的参数
-                (UBaseType_t)FreeRTOS_USART_PRIORITY,         // 任务的优先级
-                (TaskHandle_t *)&FreeRTOS_USART_TaskHandle);      // 任务句柄的地址
+                (TaskHandle_t *)&FreeRTOS_LED_Toggle_TaskHandle);// 任务句柄的地址
+    
+    FreeRTOS_OUT_TaskHandle = xTimerCreate(
+                "FreeRTOS_OUT_TIMER",
+                pdMS_TO_TICKS(1000), //时间片
+                pdTRUE,
+                (void*)1,
+                FreeRTOS_OUT);
+    if(FreeRTOS_OUT_TaskHandle != NULL)
+    {
+        if(xTimerStart(FreeRTOS_OUT_TaskHandle, 0) != pdPASS)
+        {
+            printf("xTimerStart NO\n\r");
+        }else
+        {
+            printf("xTimerStart OK\n\r");
+        }
+    }
     vTaskDelete(NULL);
 }
 
@@ -41,7 +52,6 @@ void FreeRTOS_LED_Toggle(void *pvParameters)
     while(1)
     {
         LED_Toggle();
-        printf("FreeRTOS_LED_Toggle\n\r");
         vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
@@ -49,21 +59,39 @@ void FreeRTOS_LED_Toggle(void *pvParameters)
 char taskListBuffer[512] = {};
 char runTimeStatsBuffer[512] = {};
 
-void FreeRTOS_USART(void *pvParameters)
+void FreeRTOS_OUT(TimerHandle_t xTimer)
 {
-    while(1)
+    float Temperature = 0, Sunlight = 0;
+    Temperature = DS18B20_GetTemperture();
+    Sunlight = Get_ADC_Value();
+    printf("Temperature:%f\r\n", Temperature);
+    printf("Sunlight:%f\r\n", Sunlight);
+    OLED_ShowFloatNum(0, 16, Temperature, 7, 16, 1);
+    OLED_ShowNum(0, 48, Sunlight, 4, 16, 1);
+    OLED_Refresh();
+
+    vTaskList(taskListBuffer);
+    printf("Name          State   Priority Stack   Num\n");
+    printf("%s\n", taskListBuffer);
+
+    vTaskGetRunTimeStats(runTimeStatsBuffer);
+    printf("CPU Usage Summary:\n");
+    printf("%s\n", runTimeStatsBuffer);
+}
+
+void vPreSleepProcessing( TickType_t xExpectedIdleTime )
+{
+    if(xExpectedIdleTime > 10)
     {
-        printf("FreeRTOS_USART\n\r");
-        vTaskDelay(pdMS_TO_TICKS(1000));
-
-        vTaskList(taskListBuffer);
-        printf("Name          State   Priority Stack   Num\n");
-        printf("%s\n", taskListBuffer);
-
-        vTaskGetRunTimeStats(runTimeStatsBuffer);
-        printf("CPU Usage Summary:\n");
-        printf("%s\n", runTimeStatsBuffer);
+        printf("vPreSleepProcessing:%d\n\r",xExpectedIdleTime);
+        // 中等时间空闲：进入睡眠模式
     }
+}
+
+void vPostSleepProcessing( TickType_t xExpectedIdleTime )
+{
+    printf("vPostSleepProcessing:%d\n\r",xExpectedIdleTime);
+    // 睡眠模式唤醒后的处理
 }
 
 // 使用 DWT 周期计数器 (Cortex-M3/M4)

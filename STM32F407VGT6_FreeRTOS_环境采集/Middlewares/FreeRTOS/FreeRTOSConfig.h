@@ -126,7 +126,7 @@
 #define INCLUDE_xTaskGetSchedulerState   1
 
 /* 低功耗宏 */
-#define configUSE_TICKLESS_IDLE               0
+#define configUSE_TICKLESS_IDLE               1
 //设置为 1 时，启用 Tickless 低功耗模式，会影响程序下载。
     #if configUSE_TICKLESS_IDLE
     #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP 2
